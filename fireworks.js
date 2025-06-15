@@ -1,6 +1,7 @@
 // Get the canvas element and its drawing context
 const canvas = document.getElementById('fireworks');
 const ctx = canvas.getContext('2d');
+let animationRunning = false;
 
 // Set the canvas size to full screen
 canvas.width = window.innerWidth;
@@ -94,32 +95,31 @@ let fireworks = [];
 
 // Function to animate the fireworks
 function animate() {
-    // Request the next animation frame
-    requestAnimationFrame(animate);
+    if (animationRunning) return;
+    animationRunning = true;
 
-    // Clear the canvas and create a trailing effect
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    function frame() {
+        requestAnimationFrame(frame);
 
-    // Update and draw each firework
-    fireworks.forEach((firework, index) => {
-        firework.update();
-        firework.draw();
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Remove fireworks that have finished exploding
-        if (firework.lifespan <= 0 && firework.particles.every(p => p.alpha <= 0)) {
-            fireworks.splice(index, 1);
+        fireworks.forEach((firework, index) => {
+            firework.update();
+            firework.draw();
+
+            if (firework.lifespan <= 0 && firework.particles.every(p => p.alpha <= 0)) {
+                fireworks.splice(index, 1);
+            }
+        });
+
+        if (Math.random() < 0.015) { 
+            const x = Math.random() * canvas.width;
+            const color = `hsl(${Math.random() * 360}, 50%, 50%)`;
+            fireworks.push(new Firework(x, canvas.height, color));
         }
-    });
-
-    // Occasionally create a new firework
-    if (Math.random() < 0.015) { 
-        const x = Math.random() * canvas.width;
-        const color = `hsl(${Math.random() * 360}, 50%, 50%)`;
-        fireworks.push(new Firework(x, canvas.height, color));
     }
+
+    frame();
 }
 
-// Start the animation
-
-animate();
