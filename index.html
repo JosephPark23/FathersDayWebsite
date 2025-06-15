@@ -14,9 +14,15 @@
             padding: 0 10px;
             background-color: #8de5db;
         }
-        h1, h2, h3 {
+        h1{
             line-height: 1.2;
             font-family: sans-serif;
+        }
+        h2{
+            line-height: 1.2;
+            font-family: sans-serif;
+            color: azure;
+            font-size: xx-large;
         }
         canvas {
             display: block;
@@ -46,12 +52,26 @@
     <button id="prizebutton" onclick="showPrize()">
         Click for Prize...
     </button>
-    <h2 id="prize-message" style="display: none;">Check the basement... 🎉</h2>
+    <h2 id="prizemessage" style="display: none;">Check the basement... 🎉</h2>
+    <audio id="firework-audio" src="firework-sound.mp3" preload="auto"></audio>
     <script>
         function showPrize() {
             animate();
-            document.getElementById('prize-message').style.display = 'block';
+            const sound = document.getElementById('firework-audio');
+            sound.currentTime = 0;
+            sound.play();
+
+            const prizeMsg = document.getElementById('prizemessage');
+            prizeMsg.style.display = 'block';
+
+            const button = document.getElementById('prizebutton');
+            button.remove();
+
+            document.querySelectorAll('h1, h2').forEach(heading => {
+                heading.style.color = 'azure';
+            });
         }
-        </script>
+    </script>
+    
 </body>
 </html>
